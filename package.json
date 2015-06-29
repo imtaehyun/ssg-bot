@@ -1,0 +1,7 @@
+{
+  "name": "ssgbot",
+  "version": "0.0.1",
+  "dependencies": {
+    "hapi": "^8.6.1"
+  }
+}
