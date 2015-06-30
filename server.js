@@ -13,6 +13,7 @@ server.route({
     path: '/bot/hook',
     handler: function(request, reply) {
         console.log(request.payload);
+        reply('ok');
     }
 });
 
