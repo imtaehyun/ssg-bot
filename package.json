@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "hapi": "^8.6.1",
-    "node-parse-api": "^0.3.7"
+    "node-parse-api": "^0.3.7",
+    "underscore": "^1.8.3",
+    "x-ray": "^2.0.1"
   }
 }
