@@ -2,8 +2,10 @@
   "name": "ssgbot",
   "version": "0.0.1",
   "dependencies": {
+    "config": "^1.14.0",
     "cron": "^1.0.9",
     "hapi": "^8.6.1",
+    "moment": "^2.10.3",
     "node-parse-api": "^0.3.7",
     "request": "^2.58.0",
     "underscore": "^1.8.3",

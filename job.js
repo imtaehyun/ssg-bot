@@ -6,12 +6,12 @@ var _ = require('underscore'),
 
 var Job = {
     start: function() {
-        this.getTodayCardPromo().start();
+        this.collectTodayCardPromo.start();
     },
 
-    getTodayCardPromo: function() {
+    collectTodayCardPromo: function() {
         return new CronJob({
-            cronTime: '00 53 00 * * *',
+            cronTime: '00 10 00 * * *',
             onTick: function() {
 
                 console.log('[JOB] getTodayCardPromo starts');
@@ -20,7 +20,7 @@ var Job = {
                     _.each(cardPromoList, function (cardPromo) {
                         db.saveCardPromo(cardPromo, function(err, response) {
                             if (err) console.error('err: ' + JSON.stringify(err));
-                            else console.log('response: ' + JSON.string(response));
+                            else console.log('response: ' + JSON.stringify(response));
                         });
                     });
                 });
@@ -36,10 +36,10 @@ var Job = {
 
     test: function() {
         SSG.getTodayCardPromoInfo(function (err, cardPromoList) {
-                _.each(cardPromoList, function (cardPromo) {
+            _.each(cardPromoList, function (cardPromo) {
                 db.saveCardPromo(cardPromo, function(err, response) {
                     if (err) console.error('err: ' + JSON.stringify(err));
-                    else console.log('response: ' + JSON.string(response));
+                    else console.log('response: ' + JSON.stringify(response));
                 });
             });
         });
