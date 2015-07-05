@@ -22,8 +22,8 @@ var Job = {
         var self = this;
         SSG.getTodayCardPromotion().then(
             function(cardPromoList) {
-                _.each(cardPromoList, function(cardPromo) {
-                    db.saveCardPromo(cardPromo).then(
+                db.saveCardPromoList(cardPromoList)
+                    .then(
                         function(result) {
                             console.log(result);
                             self.sendJobResultMessage('saveTodayCardPromotion', true, result);
@@ -32,8 +32,7 @@ var Job = {
                             console.error(err);
                             self.sendJobResultMessage('saveTodayCardPromotion', true, err);
                         }
-                    )
-                });
+                    );
             },
             function(err) {
                 console.error(err);

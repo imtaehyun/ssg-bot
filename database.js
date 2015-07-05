@@ -1,4 +1,5 @@
 var Promise = require('bluebird'),
+    _ = require('underscore'),
     Parse = require('node-parse-api').Parse,
     Config = require('config');
 
@@ -12,6 +13,22 @@ var DB = {
     saveCardPromo: function(cardPromo) {
         return new Promise(function(resolve, reject) {
             db.insert('CardPromo', cardPromo, function(err, response) {
+                if (err) reject(err);
+                else resolve(response);
+            });
+        });
+    },
+
+    saveCardPromoList: function(cardPromoList) {
+        return new Promise(function(resolve, reject) {
+            var batchRequests = _.map(cardPromoList, function(cardPromo) {
+                return {
+                    method: 'POST',
+                    path: '/1/classes/CardPromo',
+                    body: cardPromo
+                };
+            });
+            db.batch(batchRequests, function(err, response) {
                 if (err) reject(err);
                 else resolve(response);
             });
