@@ -1,4 +1,5 @@
-var Parse = require('node-parse-api').Parse,
+var Promise = require('bluebird'),
+    Parse = require('node-parse-api').Parse,
     Config = require('config');
 
 var db = new Parse({
@@ -8,15 +9,56 @@ var db = new Parse({
 
 var DB = {
 
-    saveCardPromo: function(cardPromo, fn) {
-        db.insert('CardPromo', cardPromo, function(err, response) {
-            if (err) {
-                fn(err);
-            } else {
-                fn(null, response);
-            }
+    saveCardPromo: function(cardPromo) {
+        return new Promise(function(resolve, reject) {
+            db.insert('CardPromo', cardPromo, function(err, response) {
+                if (err) reject(err);
+                else resolve(response);
+            });
+        });
+    },
+
+    addUser: function(user) {
+        return new Promise(function(resolve, reject) {
+            db.insert('User', {
+                telegramId: user.id,
+                username: user.username,
+                firstName: user.first_name,
+                lastName: user.last_name
+            }, function(err, response) {
+                if (err) throw new Error('Parse User class insert err: ' + JSON.stringify(err));
+
+                resolve(response);
+            });
+        });
+    },
+
+    findUser: function(user) {
+        return new Promise(function(resolve, reject) {
+            db.find('User', { telegramId: user.id }, function(err, response) {
+                if (err) throw new Error('Parse User class find err: ' + JSON.stringify(err));
+
+                if (response.results.length == 1) {
+                    resolve(response.results[0]);
+                } else if (response.results.length == 0) {
+                    reject('no user');
+                } else {
+                    throw new Error('more than 1 user');
+                }
+            });
         });
     }
 };
-
+/*DB.findUser({id:49397784}).then(function(response) {
+    console.log(response);
+}, function(err) {
+    console.error(err);
+});
+DB.addUser({id:11,userName:'test', first_name: 'test', last_name: 'test'})
+    .then(function(response) {
+        console.log(response);
+    }, function(err) {
+        console.error(err);
+    });
+ */
 module.exports = DB;

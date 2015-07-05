@@ -1,4 +1,5 @@
 var _ = require('underscore'),
+    Promise = require('bluebird'),
     moment = require('moment'),
     Xray = require('x-ray'),
     x = Xray(),
@@ -6,30 +7,30 @@ var _ = require('underscore'),
 
 
 var SSG = {
-    collectTodayCardPromoInfo: function(fn) {
-        var self = this;
-        x('http://www.ssg.com', '#bnBlistarea .bn_blist li', [{
-            link: 'a@href',
-            promoName: 'img@alt',
-            imgUrl: 'img@src'
-        }])(function(err, cardPromoList) {
-            if (err)
-                fn(err);
-            else
-                fn(null, self.attachMessage(cardPromoList));
-        });
-    },
-    attachMessage: function(cardPromoList) {
+    /**
+     *
+     * @returns {bluebird|exports|module.exports}
+     */
+    getTodayCardPromotion: function() {
+        return new Promise(function(resolve, reject) {
+            x('http://www.ssg.com', '#bnBlistarea .bn_blist li', [{
+                link: 'a@href',
+                promoName: 'img@alt',
+                imgUrl: 'img@src'
+            }])(function(err, cardPromoList) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(_.map(cardPromoList, function(cardPromo) {
+                        cardPromo.promoDate = moment().format("YYYYMMDD");
+                        cardPromo.cardName = cardPromo.promoName.substring(0, 4);
+                        cardPromo.link = cardPromo.link.substring(0, cardPromo.link.indexOf('&tlid'));
+                        cardPromo.message = '오늘은 ' + cardPromo.promoName + ' 행사일입니다. ' + cardPromo.link;
 
-        return _.map(cardPromoList, function(cardPromo) {
-
-            cardPromo.promoDate = moment().format("YYYYMMDD");
-            cardPromo.cardName = cardPromo.promoName.substring(0, 4);
-            cardPromo.link = cardPromo.link.substring(0, cardPromo.link.indexOf('&tlid'));
-            cardPromo.message = '오늘은 ' + cardPromo.promoName + ' 행사일입니다. ' + cardPromo.link;
-
-            return cardPromo;
-
+                        return cardPromo;
+                    }));
+                }
+            });
         });
     }
 };

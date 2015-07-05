@@ -1,54 +1,55 @@
 var _ = require('underscore'),
+    moment = require('moment'),
     CronJob = require('cron').CronJob,
-    SSG = require('./ssg')
-    db = require('./database')
+    SSG = require('./ssg'),
+    db = require('./database'),
+    telegram = require('./telegram')
     ;
 
 var Job = {
     start: function() {
-        this.collectTodayCardPromo.start();
-    },
-
-    collectTodayCardPromo: function() {
-        return new CronJob({
+        new CronJob({
             cronTime: '00 10 00 * * *',
             onTick: function() {
-
-                console.log('[JOB] getTodayCardPromo starts');
-                SSG.getTodayCardPromoInfo(function (err, cardPromoList) {
-                    console.log(cardPromoList);
-                    _.each(cardPromoList, function (cardPromo) {
-                        db.saveCardPromo(cardPromo, function(err, response) {
-                            if (err) console.error('err: ' + JSON.stringify(err));
-                            else console.log('response: ' + JSON.stringify(response));
-                        });
-                    });
-                });
+                this.saveTodayCardPromotion();
             },
             start: false,
             timeZone: 'Asia/Seoul'
-        });
+        }).start();
+    },
+
+    saveTodayCardPromotion: function() {
+        var self = this;
+        SSG.getTodayCardPromotion().then(
+            function(cardPromoList) {
+                _.each(cardPromoList, function(cardPromo) {
+                    db.saveCardPromo(cardPromo).then(
+                        function(result) {
+                            console.log(result);
+                            self.sendJobResultMessage('saveTodayCardPromotion', true, result);
+                        },
+                        function(err) {
+                            console.error(err);
+                            self.sendJobResultMessage('saveTodayCardPromotion', true, err);
+                        }
+                    )
+                });
+            },
+            function(err) {
+                console.error(err);
+            }
+        );
     },
 
     sendCardPromoMessageJob: function() {
 
     },
 
-    test: function() {
-        SSG.getTodayCardPromoInfo(function (err, cardPromoList) {
-            _.each(cardPromoList, function (cardPromo) {
-                db.saveCardPromo(cardPromo, function(err, response) {
-                    if (err) console.error('err: ' + JSON.stringify(err));
-                    else console.log('response: ' + JSON.stringify(response));
-                });
-            });
-        });
+    sendJobResultMessage: function(jobName, isSucess, result) {
+        var message = 'Job:' + jobName + ' ' + (isSucess ? 'succeed' : 'failed') + ' at ' + moment().format() + '. ' + JSON.stringify(result);
+        telegram.sendMessage(null, message);
     }
 };
-
-//new CronJob('00 00 7-17 * * *', function() {
-//}, null, true, null, null);
-Job.test();
 
 module.exports = Job;
 
