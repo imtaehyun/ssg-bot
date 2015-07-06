@@ -1,3 +1,4 @@
+require('newrelic');
 var Hapi = require('hapi'),
     db = require('./database'),
     job = require('./job');
