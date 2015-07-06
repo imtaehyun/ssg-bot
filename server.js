@@ -17,6 +17,14 @@ server.route({
 });
 
 server.route({
+    method: 'GET',
+    path: '/bot/ping',
+    handler: function(request, reply) {
+        reply('ok');
+    }
+});
+
+server.route({
     method: 'POST',
     path: '/bot/hook',
     handler: function(request, reply) {
