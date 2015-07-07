@@ -31,9 +31,10 @@ server.route({
         console.log(request.payload);
         var update = request.payload;
 
-        if (update.message.text === '/start') {
-            db.findUser(update.message.from)
-                .then(
+        switch (update.message.text) {
+            case '/start':
+                db.findUser(update.message.from)
+                    .then(
                     function(user) {
                         reply(user);
                     },
@@ -48,10 +49,16 @@ server.route({
                 ).catch(function(err) {
                     reply(err);
                 });
-        } else {
-            reply('ok');
-        }
+                break;
 
+            case '/admin':
+                job.saveTodayCardPromotion();
+                break;
+
+            default:
+                reply('ok');
+                break;
+        }
     }
 });
 
