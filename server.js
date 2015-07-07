@@ -53,6 +53,7 @@ server.route({
 
             case '/admin':
                 job.saveTodayCardPromotion();
+                reply('ok');
                 break;
 
             default:
