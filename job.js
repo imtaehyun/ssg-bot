@@ -7,11 +7,13 @@ var _ = require('underscore'),
     ;
 
 var Job = {
+
     start: function() {
+        var self = this;
         new CronJob({
             cronTime: '00 10 00 * * *',
             onTick: function() {
-                this.saveTodayCardPromotion();
+                self.saveTodayCardPromotion();
             },
             start: false,
             timeZone: 'Asia/Seoul'
