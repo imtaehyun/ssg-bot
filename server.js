@@ -5,8 +5,8 @@ var Hapi = require('hapi'),
 
 var server = new Hapi.Server();
 server.connection({
-    host: process.env.HOST || '0.0.0.0',
-    port: process.env.PORT || 3000
+    host: process.env.HOST || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
+    port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000
 });
 server.route({
     method: 'GET',
