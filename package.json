@@ -1,6 +1,10 @@
 {
   "name": "ssgbot",
   "version": "0.0.1",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
   "dependencies": {
     "bluebird": "^2.9.32",
     "config": "^1.14.0",
