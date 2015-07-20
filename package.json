@@ -5,6 +5,9 @@
     "start": "node server.js"
   },
   "main": "server.js",
+  "engines": {
+    "node": ">= 0.12.0"
+  },
   "dependencies": {
     "bluebird": "^2.9.32",
     "config": "^1.14.0",

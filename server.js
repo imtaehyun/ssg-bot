@@ -1,12 +1,12 @@
-require('newrelic');
+//require('newrelic');
 var Hapi = require('hapi'),
     db = require('./database'),
     job = require('./job');
 
 var server = new Hapi.Server();
 server.connection({
-    host: process.env.HOST || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
-    port: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000
+    host: process.env.OPENSHIFT_NODEJS_IP,
+    port: process.env.OPENSHIFT_NODEJS_PORT || 8080
 });
 server.route({
     method: 'GET',
@@ -65,5 +65,5 @@ server.route({
 
 server.start(function() {
     console.log('Server running at: ', server.info.uri);
-    job.start();
+    //job.start();
 });
