@@ -64,6 +64,33 @@ var DB = {
                 }
             });
         });
+    },
+
+    findLastUpdateId: function() {
+        return new Promise(function(resolve, reject) {
+            db.find('MessageLog', { order: '-createdAt', limit: 1 }, function(err, response) {
+                if (err) throw new Error('Parse MessageLog class find err: ' + JSON.stringify(err));
+
+                if (response.results.length == 1) {
+                    var lastUpdateId = response.results[0].update_id;
+                    resolve(lastUpdateId);
+                } else {
+                    reject('no update id');
+                }
+            });
+        });
+    },
+
+    addMessageLog: function(result) {
+        return new Promise(function(resolve, reject) {
+            db.insert('MessageLog', {
+                update_id: result.update_id,
+                message: result.message
+            }, function(err, response) {
+                if (err) throw new Error('Parse MessageLog class insert err: ' + JSON.stringify(err));
+                resolve(result.update_id);
+            });
+        })
     }
 };
 /*DB.findUser({id:49397784}).then(function(response) {
