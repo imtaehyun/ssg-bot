@@ -15,7 +15,11 @@ var logger = new (winston.Logger)({
         }),
         new (winston.transports.DailyRotateFile)({
             level: 'debug',
-            filename: 'log'
+            filename: 'log',
+            colorize: true,
+            timestamp: function() {
+                return moment().format();
+            }
         })
     ]
 });
