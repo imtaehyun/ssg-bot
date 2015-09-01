@@ -21,7 +21,7 @@
     "underscore": "^1.8.3",
     "unirest": "^0.4.2",
     "winston": "^1.0.1",
-    "winston-loggly": "^1.1.0",
+    "winston-papertrail": "^1.0.1",
     "x-ray": "^2.0.1"
   }
 }
