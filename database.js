@@ -52,7 +52,7 @@ var DB = {
 
     findUser: function(user) {
         return new Promise(function(resolve, reject) {
-            db.find('User', { telegramId: user.id }, function(err, response) {
+            db.find('User', { where: { telegramId: user.id } }, function(err, response) {
                 if (err) throw new Error('Parse User class find err: ' + JSON.stringify(err));
 
                 if (response.results.length == 1) {
