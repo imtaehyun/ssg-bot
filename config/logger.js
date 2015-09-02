@@ -14,14 +14,14 @@ var logger = new (winston.Logger)({
                 return moment().format();
             }
         }),
-        new (winston.transports.DailyRotateFile)({
-            level: 'debug',
-            filename: 'log',
-            colorize: true,
-            logFormat: function(level, message) {
-                return moment().format() + ' [' + level + '] ' + message;
-            }
-        }),
+        //new (winston.transports.DailyRotateFile)({
+        //    level: 'debug',
+        //    filename: 'log',
+        //    colorize: true,
+        //    logFormat: function(level, message) {
+        //        return moment().format() + ' [' + level + '] ' + message;
+        //    }
+        //}),
         new (winston.transports.Papertrail)({
             host: 'logs2.papertrailapp.com',
             port: 39801,

@@ -1,6 +1,7 @@
 //require('newrelic');
 var Hapi = require('hapi'),
-    db = require('./database')
+    db = require('./database'),
+    logger = require('./config/logger')
     //job = require('./job')
     ;
 
