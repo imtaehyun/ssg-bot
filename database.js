@@ -35,6 +35,16 @@ var DB = {
         });
     },
 
+    getCardPromoList: function(date) {
+        return new Promise(function(resolve, reject) {
+            db.find('CardPromo', { where: { promoDate: date } }, function(err, response) {
+                if (err) throw new Error('Parse CardPromo class find err: ' + JSON.stringify(err));
+
+                resolve(response.results);
+            });
+        });
+    },
+
     addUser: function(user) {
         return new Promise(function(resolve, reject) {
             db.insert('User', {
@@ -66,6 +76,16 @@ var DB = {
         });
     },
 
+    getAllUser: function() {
+        return new Promise(function(resolve, reject) {
+            db.find('User', {}, function(err, response) {
+                if (err) throw new Error('Parse User class get all user err: ' + JSON.stringify(err));
+
+                resolve(response.results);
+            });
+        });
+    },
+
     findLastUpdateId: function() {
         return new Promise(function(resolve, reject) {
             db.find('MessageLog', { order: '-createdAt', limit: 1 }, function(err, response) {
@@ -93,16 +113,5 @@ var DB = {
         })
     }
 };
-/*DB.findUser({id:49397784}).then(function(response) {
-    console.log(response);
-}, function(err) {
-    console.error(err);
-});
-DB.addUser({id:11,userName:'test', first_name: 'test', last_name: 'test'})
-    .then(function(response) {
-        console.log(response);
-    }, function(err) {
-        console.error(err);
-    });
- */
+
 module.exports = DB;

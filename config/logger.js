@@ -18,8 +18,8 @@ var logger = new (winston.Logger)({
             level: 'debug',
             filename: 'log',
             colorize: true,
-            timestamp: function() {
-                return moment().format();
+            logFormat: function(level, message) {
+                return moment().format() + ' [' + level + '] ' + message;
             }
         }),
         new (winston.transports.Papertrail)({

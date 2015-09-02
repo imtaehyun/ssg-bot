@@ -3,7 +3,8 @@ var _ = require('underscore'),
     db = require('./database'),
     telegram = require('./telegram'),
     schedule = require('node-schedule'),
-    logger = require('./config/logger')
+    logger = require('./config/logger'),
+    moment = require('moment')
     ;
 var self = this;
 var updateId = null;
@@ -22,7 +23,10 @@ db.findLastUpdateId().then(
 /*
     Job - 카드 할인정보 수집
 */
-var jobGetTodayCardPromotion = schedule.scheduleJob('10 0 * * *', function() {
+var jobGetTodayCardPromotion = schedule.scheduleJob('10 0 * * *', funcGetTodayCardPromotion);
+
+
+var funcGetTodayCardPromotion = function() {
     logger.info('[Job] 카드할인정보 수집 시작');
 
     SSG.getTodayCardPromotion().then(
@@ -42,8 +46,7 @@ var jobGetTodayCardPromotion = schedule.scheduleJob('10 0 * * *', function() {
             logger.error('[Job] 카드할인정보 수집 실패 : ', err);
         }
     );
-});
-
+};
 /*
     Job - Telegram 메시지 수신
 */
@@ -83,6 +86,10 @@ var jobBotGetNewUpdate = schedule.scheduleJob('*/10 * * * * *', function() {
                         });
                     break;
 
+                case '/admin':
+                    funcGetTodayCardPromotion();
+                    break;
+
                 default:
                     break;
             }
@@ -92,3 +99,27 @@ var jobBotGetNewUpdate = schedule.scheduleJob('*/10 * * * * *', function() {
         }
     )
 });
+
+var jobMorningMessage = schedule.scheduleJob('* 30 7 * * *', sendMorningMessage);
+
+var sendMorningMessage = function() {
+    logger.info('[Job] Send Morning Message');
+    var todayDate = moment().format('YYYYMMDD');
+
+    // 오늘 프로모션정보를 가져온다
+    db.getCardPromoList(todayDate).then(function(cardPromos) {
+        var cardPromoStr = _.map(cardPromos, function(cardPromo) { return cardPromo.cardName; }).join(', ');
+        var message = '오늘 SSG에서 ' + cardPromoStr + '로 쇼핑하면 할인혜택이 있어요. (http://www.ssg.com)\n\n';
+        message += '프로모션 상세정보\n';
+        message += _.map(cardPromos, function(cardPromo) { return '* ' + cardPromo.promoName; }).join('\n');
+        logger.debug(message);
+
+        // User 모두에게 메시지 발송
+        db.getAllUser().then(function(users) {
+            _.each(users, function(user) { telegram.sendMessage(user.telegramId, message); });
+            logger.info(users.length + '명에게 발송완료');
+        }).catch(function(err) {
+            logger.error(err);
+        });
+    });
+};
