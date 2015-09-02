@@ -2,8 +2,7 @@ var _ = require('underscore'),
     Promise = require('bluebird'),
     moment = require('moment'),
     Xray = require('x-ray'),
-    x = Xray(),
-    Telegram = require('./telegram');
+    x = Xray();
 
 
 var SSG = {
@@ -25,7 +24,6 @@ var SSG = {
                         cardPromo.promoDate = moment().format("YYYYMMDD");
                         cardPromo.cardName = cardPromo.promoName.substring(0, 4);
                         cardPromo.link = cardPromo.link.substring(0, cardPromo.link.indexOf('&tlid'));
-                        cardPromo.message = '오늘은 ' + cardPromo.promoName + ' 행사일입니다. ' + cardPromo.link;
 
                         return cardPromo;
                     }));
