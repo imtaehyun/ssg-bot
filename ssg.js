@@ -2,8 +2,7 @@ var _ = require('underscore'),
     Promise = require('bluebird'),
     moment = require('moment'),
     Xray = require('x-ray'),
-    x = Xray(),
-    Telegram = require('./telegram');
+    x = Xray();
 
 
 var SSG = {

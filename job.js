@@ -6,25 +6,11 @@ var _ = require('underscore'),
     logger = require('./config/logger'),
     moment = require('moment')
     ;
-var self = this;
-var updateId = null;
 
-// updateId를 먼저 가져온 후 Bot 실행
-db.findLastUpdateId().then(
-    function(updateId) {
-        logger.debug('updateId : %d', updateId);
-        self.updateId = updateId;
-    },
-    function(err) {
-        logger.error(err);
-    }
-);
-
-/*
-    Job - 카드 할인정보 수집
-*/
+// Job1 - 카드 할인정보 수집 (오전 00시 10분)
 var jobGetTodayCardPromotion = schedule.scheduleJob('10 0 * * *', funcGetTodayCardPromotion);
-
+// Job2 - 오전 할인정보 안내 메시지 발송 (오전 08시 30분)
+var jobMorningMessage = schedule.scheduleJob('* 30 8 * * *', funcSendMorningMessage);
 
 var funcGetTodayCardPromotion = function() {
     logger.info('[Job] 카드할인정보 수집 시작');
@@ -47,62 +33,8 @@ var funcGetTodayCardPromotion = function() {
         }
     );
 };
-/*
-    Job - Telegram 메시지 수신
-*/
-var jobBotGetNewUpdate = schedule.scheduleJob('*/10 * * * * *', function() {
-    if (self.updateId == null) return false;
 
-    telegram.getUpdates(self.updateId+1).then(
-        function(update) {
-            logger.info('[Job] 새 메시지 : ', update);
-
-            // MessageLog Table 추가
-            db.addMessageLog(update).then(
-                function(updateId) {
-                    self.updateId = updateId;
-                }
-            ).catch(
-                function(err) {
-                    logger.error('MessageLog add fail');
-                }
-            );
-
-            switch (update.message.text) {
-                case '/start':
-                    db.findUser(update.message.from).then(
-                        function(user) {
-                            logger.debug('이미 등록된 유저 요청 : ', user);
-                        },
-                        function(msg) {
-                            // 등록된 user가 없음
-
-                            db.addUser(update.message.from)
-                                .then(function(result) { logger.info('새로운 유저 등록 완료 : ', result); })
-                                .catch(function(err) { logger.error('새로운 유저 등록 실패 : ', err); });
-                        }
-                    ).catch(function(err) {
-                            logger.error('유저 조회 실패');
-                        });
-                    break;
-
-                case '/admin':
-                    funcGetTodayCardPromotion();
-                    break;
-
-                default:
-                    break;
-            }
-        },
-        function(err) {
-            // 내용이 없으면 아무것도 하지않음
-        }
-    )
-});
-
-var jobMorningMessage = schedule.scheduleJob('* 30 7 * * *', sendMorningMessage);
-
-var sendMorningMessage = function() {
+var funcSendMorningMessage = function() {
     logger.info('[Job] Send Morning Message');
     var todayDate = moment().format('YYYYMMDD');
 
