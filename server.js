@@ -2,7 +2,7 @@
 var Hapi = require('hapi'),
     db = require('./database'),
     logger = require('./config/logger')
-    //job = require('./job')
+    job = require('./job')
     ;
 
 var server = new Hapi.Server();
