@@ -1,11 +1,10 @@
 var Promise = require('bluebird'),
     _ = require('underscore'),
-    Parse = require('node-parse-api').Parse,
-    Config = require('config');
+    Parse = require('node-parse-api').Parse;
 
 var db = new Parse({
-    app_id: process.env.PARSE_APP_ID || Config.get('PARSE_APP_ID'),
-    api_key: process.env.PARSE_API_KEY || Config.get('PARSE_API_KEY')
+    app_id: process.env.PARSE_APP_ID,
+    api_key: process.env.PARSE_API_KEY
 });
 
 var DB = {
