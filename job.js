@@ -7,13 +7,10 @@ var _ = require('underscore'),
     moment = require('moment')
     ;
 
-var job = function() {
-    // Job1 - 카드 할인정보 수집 (오전 00시 10분)
-    var jobGetTodayCardPromotion = schedule.scheduleJob('10 0 * * *', funcGetTodayCardPromotion);
-    // Job2 - 오전 할인정보 안내 메시지 발송 (오전 08시 30분)
-    var jobMorningMessage = schedule.scheduleJob('* 30 8 * * *', funcSendMorningMessage);
-};
-
+// Job1 - 카드 할인정보 수집 (오전 00시 10분)
+var jobGetTodayCardPromotion = schedule.scheduleJob('26 0 * * *', funcGetTodayCardPromotion);
+// Job2 - 오전 할인정보 안내 메시지 발송 (오전 08시 30분)
+var jobMorningMessage = schedule.scheduleJob('* 30 8 * * *', funcSendMorningMessage);
 
 var funcGetTodayCardPromotion = function() {
     logger.info('[Job] 카드할인정보 수집 시작');
@@ -58,5 +55,3 @@ var funcSendMorningMessage = function() {
         });
     });
 };
-
-module.exports = job;

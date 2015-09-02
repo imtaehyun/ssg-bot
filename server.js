@@ -2,7 +2,6 @@
 var Hapi = require('hapi'),
     db = require('./database'),
     logger = require('./config/logger')
-    job = require('./job')
     ;
 
 var server = new Hapi.Server();
@@ -64,5 +63,4 @@ server.route({
 
 server.start(function() {
     console.log('Server running at: ', server.info.uri);
-    //job.start();
 });
