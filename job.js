@@ -8,11 +8,12 @@ var _ = require('underscore'),
     ;
 
 // Job1 - 카드 할인정보 수집 (오전 00시 10분)
-var jobGetTodayCardPromotion = schedule.scheduleJob('26 0 * * *', funcGetTodayCardPromotion);
+//var jobGetTodayCardPromotion = schedule.scheduleJob('26 0 * * *', funcGetTodayCardPromotion);
 // Job2 - 오전 할인정보 안내 메시지 발송 (오전 08시 30분)
-var jobMorningMessage = schedule.scheduleJob('* 30 8 * * *', funcSendMorningMessage);
+//var jobMorningMessage = schedule.scheduleJob('* 30 8 * * *', funcSendMorningMessage);
 
-var funcGetTodayCardPromotion = function() {
+var job = function() {};
+job.prototype.collectTodayCardPromo = function() {
     logger.info('[Job] 카드할인정보 수집 시작');
 
     SSG.getTodayCardPromotion().then(
@@ -34,7 +35,7 @@ var funcGetTodayCardPromotion = function() {
     );
 };
 
-var funcSendMorningMessage = function() {
+job.prototype.sendMorningMessage = function() {
     logger.info('[Job] Send Morning Message');
     var todayDate = moment().format('YYYYMMDD');
 
@@ -55,3 +56,6 @@ var funcSendMorningMessage = function() {
         });
     });
 };
+var newJob = new job();
+newJob.collectTodayCardPromo();
+module.exports = new job();
