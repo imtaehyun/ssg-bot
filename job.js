@@ -56,6 +56,5 @@ job.prototype.sendMorningMessage = function() {
         });
     });
 };
-var newJob = new job();
-newJob.collectTodayCardPromo();
+
 module.exports = new job();
